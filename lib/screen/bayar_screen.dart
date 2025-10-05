@@ -6,11 +6,7 @@ class BayarScreen extends StatefulWidget {
   final double saldo;
   final void Function(double newSaldo, double amount) onBayar;
 
-  const BayarScreen({
-    super.key,
-    required this.saldo,
-    required this.onBayar,
-  });
+  const BayarScreen({super.key, required this.saldo, required this.onBayar});
 
   @override
   State<BayarScreen> createState() => _BayarScreenState();
@@ -29,8 +25,7 @@ class _BayarScreenState extends State<BayarScreen> {
         context,
         MaterialPageRoute(
           builder: (_) => InputNominalScreen(
-            qrData:
-                "saya ingin membayar${DateTime.now()}",
+            qrData: "saya ingin membayar${DateTime.now()}",
             saldo: widget.saldo,
             onBayar: widget.onBayar,
           ),

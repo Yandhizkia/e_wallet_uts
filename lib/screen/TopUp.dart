@@ -13,7 +13,11 @@ class TopUp extends StatefulWidget {
 class _TopUpState extends State<TopUp> {
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController amountController = TextEditingController();
-  final formatCurrency = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0);
+  final formatCurrency = NumberFormat.currency(
+    locale: 'id_ID',
+    symbol: 'Rp ',
+    decimalDigits: 0,
+  );
 
   final List<int> rekomendasi = [10000, 20000, 50000, 100000, 200000, 500000];
   int? selectedAmount;
@@ -25,10 +29,7 @@ class _TopUpState extends State<TopUp> {
       appBar: AppBar(
         title: const Text(
           "Top Up Saldo",
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
-          ),
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
         ),
         centerTitle: true,
         backgroundColor: Colors.white,
@@ -239,12 +240,13 @@ class _TopUpState extends State<TopUp> {
                   GridView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      crossAxisSpacing: 12,
-                      mainAxisSpacing: 12,
-                      childAspectRatio: 2.2,
-                    ),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          crossAxisSpacing: 12,
+                          mainAxisSpacing: 12,
+                          childAspectRatio: 2.2,
+                        ),
                     itemCount: rekomendasi.length,
                     itemBuilder: (context, index) {
                       final nominal = rekomendasi[index];
@@ -273,8 +275,9 @@ class _TopUpState extends State<TopUp> {
                             boxShadow: isSelected
                                 ? [
                                     BoxShadow(
-                                      color: const Color(0xFF108489)
-                                          .withOpacity(0.3),
+                                      color: const Color(
+                                        0xFF108489,
+                                      ).withOpacity(0.3),
                                       blurRadius: 8,
                                       offset: const Offset(0, 4),
                                     ),
@@ -345,7 +348,8 @@ class _TopUpState extends State<TopUp> {
                     child: ElevatedButton(
                       onPressed: () {
                         final phone = phoneController.text;
-                        final amount = double.tryParse(amountController.text) ?? 0;
+                        final amount =
+                            double.tryParse(amountController.text) ?? 0;
 
                         if (phone.isEmpty) {
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -370,7 +374,9 @@ class _TopUpState extends State<TopUp> {
                         widget.onTopUp(amount);
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text("Top Up ${formatCurrency.format(amount)} berhasil!"),
+                            content: Text(
+                              "Top Up ${formatCurrency.format(amount)} berhasil!",
+                            ),
                             backgroundColor: const Color(0xFF10B981),
                           ),
                         );
@@ -413,11 +419,6 @@ class _TopUpState extends State<TopUp> {
   }
 
   String _formatNominal(int value) {
-    if (value >= 1000000) {
-      return "Rp ${value ~/ 1000000}jt";
-    } else if (value >= 1000) {
-      return "Rp ${value ~/ 1000}rb";
-    }
     return formatCurrency.format(value);
   }
 }

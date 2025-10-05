@@ -53,9 +53,7 @@ class _InputNominalScreenState extends State<InputNominalScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: const Text(
           'Konfirmasi Pembayaran',
           style: TextStyle(fontWeight: FontWeight.bold),
@@ -88,10 +86,7 @@ class _InputNominalScreenState extends State<InputNominalScreen> {
                   const SizedBox(height: 8),
                   Text(
                     'ke ${widget.qrData}',
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: Colors.grey[600],
-                    ),
+                    style: TextStyle(fontSize: 13, color: Colors.grey[600]),
                     textAlign: TextAlign.center,
                   ),
                 ],
@@ -114,7 +109,9 @@ class _InputNominalScreenState extends State<InputNominalScreen> {
 
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text("Pembayaran Rp ${formatCurrency.format(nominal)} berhasil!"),
+                  content: Text(
+                    "Pembayaran Rp ${formatCurrency.format(nominal)} berhasil!",
+                  ),
                   backgroundColor: const Color(0xFF10B981),
                   behavior: SnackBarBehavior.floating,
                   shape: RoundedRectangleBorder(
@@ -129,10 +126,7 @@ class _InputNominalScreenState extends State<InputNominalScreen> {
                 borderRadius: BorderRadius.circular(12),
               ),
             ),
-            child: const Text(
-              'Bayar',
-              style: TextStyle(color: Colors.white),
-            ),
+            child: const Text('Bayar', style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -145,9 +139,7 @@ class _InputNominalScreenState extends State<InputNominalScreen> {
         content: Text(msg),
         backgroundColor: isError ? Colors.red : const Color(0xFF10B981),
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
     );
   }
@@ -159,10 +151,7 @@ class _InputNominalScreenState extends State<InputNominalScreen> {
       appBar: AppBar(
         title: const Text(
           "Pembayaran QR",
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
-          ),
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
         ),
         centerTitle: true,
         backgroundColor: Colors.white,
@@ -243,10 +232,7 @@ class _InputNominalScreenState extends State<InputNominalScreen> {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: const Color(0xFFE5E7EB),
-                  width: 1,
-                ),
+                border: Border.all(color: const Color(0xFFE5E7EB), width: 1),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -359,12 +345,13 @@ class _InputNominalScreenState extends State<InputNominalScreen> {
                   GridView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      crossAxisSpacing: 10,
-                      mainAxisSpacing: 10,
-                      childAspectRatio: 2.2,
-                    ),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 10,
+                          childAspectRatio: 2.2,
+                        ),
                     itemCount: quickAmounts.length,
                     itemBuilder: (context, index) {
                       final amount = quickAmounts[index];
@@ -388,8 +375,9 @@ class _InputNominalScreenState extends State<InputNominalScreen> {
                             boxShadow: isSelected
                                 ? [
                                     BoxShadow(
-                                      color: const Color(0xFF108489)
-                                          .withOpacity(0.3),
+                                      color: const Color(
+                                        0xFF108489,
+                                      ).withOpacity(0.3),
                                       blurRadius: 8,
                                       offset: const Offset(0, 4),
                                     ),
@@ -496,11 +484,6 @@ class _InputNominalScreenState extends State<InputNominalScreen> {
   }
 
   String _formatAmount(double value) {
-    if (value >= 1000000) {
-      return "Rp ${(value / 1000000).toStringAsFixed(0)}jt";
-    } else if (value >= 1000) {
-      return "Rp ${(value / 1000).toStringAsFixed(0)}rb";
-    }
     return "Rp ${formatCurrency.format(value)}";
   }
 }
