@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'TopUp.dart';
 import 'transfer_file.dart';
+import 'bayar_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -12,7 +13,11 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   double saldo = 0;
-  final formatCurrency = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ');
+  final formatCurrency = NumberFormat.currency(
+    locale: 'id_ID',
+    symbol: 'Rp ',
+    decimalDigits: 0,
+  );
 
   void _topUp(double amount) {
     setState(() {
@@ -71,7 +76,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                   const SizedBox(height: 25),
-
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(20),
@@ -107,7 +111,18 @@ class _HomeScreenState extends State<HomeScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             ElevatedButton.icon(
-                              onPressed: _showTopUpDialog,
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => TopUp(
+                                      onTopUp: (amount) {
+                                        _topUp(amount);
+                                      },
+                                    ),
+                                  ),
+                                );
+                              },
                               icon: const Icon(Icons.add),
                               label: const Text(
                                 "Top Up",
@@ -121,6 +136,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               ),
                             ),
+
                             ElevatedButton.icon(
                               onPressed: () {
                                 Navigator.push(
@@ -180,17 +196,47 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _menuItem(IconData icon, String title) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        CircleAvatar(
-          radius: 28,
-          backgroundColor: Color(0xff108489).withOpacity(0.1),
-          child: Icon(icon, color: Color(0xff108489), size: 28),
-        ),
-        const SizedBox(height: 6),
-        Text(title, style: const TextStyle(fontSize: 12)),
-      ],
+    return InkWell(
+      onTap: () {
+        if (title == "Top Up") {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => TopUp(
+                onTopUp: (amount) {
+                  _topUp(amount);
+                },
+              ),
+            ),
+          );
+        } else if (title == "Bayar") {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BayarScreen(
+                saldo: saldo,
+                onBayar: (newSaldo) {
+                  setState(() {
+                    saldo = newSaldo; // 🔹 update saldo
+                  });
+                },
+              ),
+            ),
+          );
+        }
+      },
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CircleAvatar(
+            radius: 28,
+            backgroundColor: Color(0xff108489).withOpacity(0.1),
+            child: Icon(icon, color: Color(0xff108489), size: 28),
+          ),
+          const SizedBox(height: 6),
+          Text(title, style: const TextStyle(fontSize: 12)),
+        ],
+      ),
     );
   }
 }
