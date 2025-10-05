@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'TopUp.dart';
 import 'transfer_file.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -12,6 +13,19 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   double saldo = 0;
   final formatCurrency = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ');
+
+  void _topUp(double amount) {
+    setState(() {
+      saldo += amount;
+    });
+  }
+
+  void _showTopUpDialog() {
+    showDialog(
+      context: context,
+      builder: (_) => TopUp(onTopUp: _topUp),
+    );
+  }
 
   void _updateSaldo(double newSaldo) {
     setState(() {
@@ -34,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 bottom: 30,
               ),
               decoration: const BoxDecoration(
-                color: Colors.lightBlue,
+                color: Color(0xff108489),
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(25),
                   bottomRight: Radius.circular(25),
@@ -58,7 +72,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   const SizedBox(height: 25),
 
-                  // Card saldo
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(20),
@@ -91,8 +104,23 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         const SizedBox(height: 15),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
+                            ElevatedButton.icon(
+                              onPressed: _showTopUpDialog,
+                              icon: const Icon(Icons.add),
+                              label: const Text(
+                                "Top Up",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Color(0xff108489),
+                                foregroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                            ),
                             ElevatedButton.icon(
                               onPressed: () {
                                 Navigator.push(
@@ -111,7 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 style: TextStyle(color: Colors.white),
                               ),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.lightBlue,
+                                backgroundColor: Color(0xff108489),
                                 foregroundColor: Colors.white,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12),
@@ -136,10 +164,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 children: [
+                  _menuItem(Icons.add_card, "Top Up"),
                   _menuItem(Icons.send, "Transfer"),
                   _menuItem(Icons.payment, "Bayar"),
                   _menuItem(Icons.history, "History"),
-                  _menuItem(Icons.settings, "Pengaturan"),
                 ],
               ),
             ),
@@ -157,8 +185,8 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         CircleAvatar(
           radius: 28,
-          backgroundColor: Colors.lightBlue.withOpacity(0.1),
-          child: Icon(icon, color: Colors.lightBlue, size: 28),
+          backgroundColor: Color(0xff108489).withOpacity(0.1),
+          child: Icon(icon, color: Color(0xff108489), size: 28),
         ),
         const SizedBox(height: 6),
         Text(title, style: const TextStyle(fontSize: 12)),

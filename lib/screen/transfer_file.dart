@@ -21,8 +21,11 @@ class _TransferScreenState extends State<TransferScreen> {
   final _catatanController = TextEditingController();
   String _jenisTransfer = 'Sesama BAYAR-in';
 
-  final _formatCurrency =
-      NumberFormat.currency(locale: 'id_ID', symbol: '', decimalDigits: 0);
+  final _formatCurrency = NumberFormat.currency(
+    locale: 'id_ID',
+    symbol: '',
+    decimalDigits: 0,
+  );
 
   void _isiNominal(double value) {
     _jumlahController.text = _formatCurrency.format(value);
@@ -55,11 +58,11 @@ class _TransferScreenState extends State<TransferScreen> {
       onPressed: () => _isiNominal(amount),
       style: OutlinedButton.styleFrom(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        side: BorderSide(color: Colors.lightBlue.shade400),
+        side: BorderSide(color: Color(0xff108489)),
       ),
       child: Text(
         _formatCurrency.format(amount),
-        style: const TextStyle(fontSize: 14, color: Colors.lightBlue),
+        style: const TextStyle(fontSize: 14, color: Color(0xff108489)),
       ),
     );
   }
@@ -69,7 +72,7 @@ class _TransferScreenState extends State<TransferScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Transfer'),
-        backgroundColor: Colors.lightBlue,
+        backgroundColor: Color(0xff108489),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
@@ -84,8 +87,10 @@ class _TransferScreenState extends State<TransferScreen> {
             const SizedBox(height: 25),
 
             // Nomor penerima
-            const Text('No. Penerima',
-                style: TextStyle(fontWeight: FontWeight.w600)),
+            const Text(
+              'No. Penerima',
+              style: TextStyle(fontWeight: FontWeight.w600),
+            ),
             const SizedBox(height: 8),
             TextField(
               controller: _nomorController,
@@ -101,8 +106,10 @@ class _TransferScreenState extends State<TransferScreen> {
             const SizedBox(height: 20),
 
             // Jumlah transfer + tombol nominal cepat
-            const Text('Jumlah Transfer',
-                style: TextStyle(fontWeight: FontWeight.w600)),
+            const Text(
+              'Jumlah Transfer',
+              style: TextStyle(fontWeight: FontWeight.w600),
+            ),
             const SizedBox(height: 8),
             TextField(
               controller: _jumlahController,
@@ -127,8 +134,10 @@ class _TransferScreenState extends State<TransferScreen> {
             const SizedBox(height: 20),
 
             // Catatan
-            const Text('Catatan (Opsional)',
-                style: TextStyle(fontWeight: FontWeight.w600)),
+            const Text(
+              'Catatan (Opsional)',
+              style: TextStyle(fontWeight: FontWeight.w600),
+            ),
             const SizedBox(height: 8),
             TextField(
               controller: _catatanController,
@@ -143,8 +152,10 @@ class _TransferScreenState extends State<TransferScreen> {
             const SizedBox(height: 20),
 
             // Jenis Transfer
-            const Text('Jenis Transfer',
-                style: TextStyle(fontWeight: FontWeight.w600)),
+            const Text(
+              'Jenis Transfer',
+              style: TextStyle(fontWeight: FontWeight.w600),
+            ),
             const SizedBox(height: 8),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -178,7 +189,7 @@ class _TransferScreenState extends State<TransferScreen> {
                 onPressed: _kirimTransfer,
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
-                  backgroundColor: Colors.lightBlue,
+                  backgroundColor: Color(0xff108489),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),
                   ),
