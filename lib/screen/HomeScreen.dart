@@ -3,6 +3,15 @@ import 'package:intl/intl.dart';
 import 'TopUp.dart';
 import 'transfer_file.dart';
 import 'bayar_screen.dart';
+import 'history_screen.dart';
+
+class Transaction {
+  final String type;
+  final double amount;
+  final DateTime date;
+
+  Transaction({required this.type, required this.amount, required this.date});
+}
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -18,10 +27,14 @@ class _HomeScreenState extends State<HomeScreen> {
     symbol: 'Rp ',
     decimalDigits: 0,
   );
+  List<Transaction> history = [];
 
   void _topUp(double amount) {
     setState(() {
       saldo += amount;
+      history.add(
+        Transaction(type: "Top Up", amount: amount, date: DateTime.now()),
+      );
     });
   }
 
@@ -35,6 +48,18 @@ class _HomeScreenState extends State<HomeScreen> {
   void _updateSaldo(double newSaldo) {
     setState(() {
       saldo = newSaldo;
+      history.add(
+        Transaction(type: "Transfer", amount: newSaldo, date: DateTime.now()),
+      );
+    });
+  }
+
+  void _transfer(double amount) {
+    setState(() {
+      saldo -= amount;
+      history.add(
+        Transaction(type: "Transfer", amount: amount, date: DateTime.now()),
+      );
     });
   }
 
@@ -215,12 +240,34 @@ class _HomeScreenState extends State<HomeScreen> {
             MaterialPageRoute(
               builder: (_) => BayarScreen(
                 saldo: saldo,
-                onBayar: (newSaldo) {
+                onBayar: (newSaldo, amount) {
                   setState(() {
-                    saldo = newSaldo; // 🔹 update saldo
+                    saldo = newSaldo;
+                    history.add(
+                      Transaction(
+                        type: "Bayar",
+                        amount: amount,
+                        date: DateTime.now(),
+                      ),
+                    );
                   });
                 },
               ),
+            ),
+          );
+        } else if (title == "History") {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => HistoryScreen(history: history),
+            ),
+          );
+        } else if (title == "Transfer") {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) =>
+                  TransferScreen(saldo: saldo, onTransfer: _transfer),
             ),
           );
         }
