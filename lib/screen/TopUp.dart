@@ -13,11 +13,7 @@ class TopUp extends StatefulWidget {
 class _TopUpState extends State<TopUp> {
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController amountController = TextEditingController();
-  final formatCurrency = NumberFormat.currency(
-    locale: 'id_ID',
-    symbol: 'Rp ',
-    decimalDigits: 0,
-  );
+  final formatCurrency = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0);
 
   final List<int> rekomendasi = [10000, 20000, 50000, 100000];
 
@@ -33,6 +29,7 @@ class _TopUpState extends State<TopUp> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+
             TextField(
               controller: phoneController,
               decoration: const InputDecoration(
@@ -43,6 +40,7 @@ class _TopUpState extends State<TopUp> {
             ),
             const SizedBox(height: 20),
 
+
             TextField(
               controller: amountController,
               decoration: const InputDecoration(
@@ -52,6 +50,7 @@ class _TopUpState extends State<TopUp> {
               keyboardType: TextInputType.number,
             ),
             const SizedBox(height: 20),
+
 
             Text(
               "Rekomendasi Nominal",
@@ -85,6 +84,7 @@ class _TopUpState extends State<TopUp> {
             ),
 
             const Spacer(),
+
 
             SizedBox(
               width: double.infinity,

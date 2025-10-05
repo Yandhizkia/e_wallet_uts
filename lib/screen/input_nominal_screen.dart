@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class InputNominalScreen extends StatefulWidget {
   final String qrData;
   final double saldo;
-  final ValueChanged<double> onBayar;
+  final void Function(double newSaldo, double amount) onBayar;
 
   const InputNominalScreen({
     super.key,
@@ -34,13 +34,15 @@ class _InputNominalScreenState extends State<InputNominalScreen> {
       return;
     }
 
-    widget.onBayar(widget.saldo - nominal);
+    final newSaldo = widget.saldo - nominal;
+
+    widget.onBayar(newSaldo, nominal);
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text("Pembayaran Rp$nominal berhasil ke ${widget.qrData}")),
     );
 
-    Navigator.pop(context);
+    Navigator.pop(context); 
   }
 
   @override

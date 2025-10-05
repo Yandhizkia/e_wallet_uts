@@ -4,7 +4,7 @@ import 'input_nominal_screen.dart';
 
 class BayarScreen extends StatefulWidget {
   final double saldo;
-  final ValueChanged<double> onBayar; // 🔹 callback untuk update saldo
+  final void Function(double newSaldo, double amount) onBayar;
 
   const BayarScreen({
     super.key,
@@ -29,7 +29,8 @@ class _BayarScreenState extends State<BayarScreen> {
         context,
         MaterialPageRoute(
           builder: (_) => InputNominalScreen(
-            qrData: "Payment_Confirmation_to_User2_${DateTime.now().millisecondsSinceEpoch}",
+            qrData:
+                "saya ingin membayar${DateTime.now()}",
             saldo: widget.saldo,
             onBayar: widget.onBayar,
           ),

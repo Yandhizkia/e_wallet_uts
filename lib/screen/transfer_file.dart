@@ -6,10 +6,10 @@ class TransferScreen extends StatefulWidget {
   final ValueChanged<double> onTransfer;
 
   const TransferScreen({
-    Key? key,
+    super.key,
     required this.saldo,
     required this.onTransfer,
-  }) : super(key: key);
+  });
 
   @override
   State<TransferScreen> createState() => _TransferScreenState();
@@ -32,7 +32,6 @@ class _TransferScreenState extends State<TransferScreen> {
   }
 
   void _kirimTransfer() {
-    // Hapus titik sebelum parse
     final clean = _jumlahController.text.replaceAll('.', '');
     final jumlah = double.tryParse(clean) ?? 0;
 
@@ -45,7 +44,7 @@ class _TransferScreenState extends State<TransferScreen> {
       return;
     }
 
-    widget.onTransfer(widget.saldo - jumlah);
+    widget.onTransfer(jumlah);
     Navigator.pop(context);
   }
 
@@ -79,14 +78,12 @@ class _TransferScreenState extends State<TransferScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Info Saldo
             Text(
               'Saldo Tersedia: Rp${_formatCurrency.format(widget.saldo)}',
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 25),
 
-            // Nomor penerima
             const Text(
               'No. Penerima',
               style: TextStyle(fontWeight: FontWeight.w600),
@@ -105,7 +102,6 @@ class _TransferScreenState extends State<TransferScreen> {
             ),
             const SizedBox(height: 20),
 
-            // Jumlah transfer + tombol nominal cepat
             const Text(
               'Jumlah Transfer',
               style: TextStyle(fontWeight: FontWeight.w600),
@@ -127,13 +123,12 @@ class _TransferScreenState extends State<TransferScreen> {
               spacing: 12,
               children: [
                 _quickAmount(10000),
+                _quickAmount(50000),
                 _quickAmount(100000),
-                _quickAmount(1000000),
               ],
             ),
             const SizedBox(height: 20),
 
-            // Catatan
             const Text(
               'Catatan (Opsional)',
               style: TextStyle(fontWeight: FontWeight.w600),
@@ -151,7 +146,6 @@ class _TransferScreenState extends State<TransferScreen> {
             ),
             const SizedBox(height: 20),
 
-            // Jenis Transfer
             const Text(
               'Jenis Transfer',
               style: TextStyle(fontWeight: FontWeight.w600),
@@ -182,7 +176,6 @@ class _TransferScreenState extends State<TransferScreen> {
             ),
             const SizedBox(height: 40),
 
-            // Tombol Kirim
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
