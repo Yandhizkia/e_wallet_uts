@@ -20,33 +20,16 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
+class _HomeScreenState extends State<HomeScreen> {
   double saldo = 0;
   bool _isBalanceVisible = true;
-  late AnimationController _animationController;
-  
+
   final formatCurrency = NumberFormat.currency(
     locale: 'id_ID',
     symbol: 'Rp ',
     decimalDigits: 0,
   );
   List<Transaction> history = [];
-
-  @override
-  void initState() {
-    super.initState();
-    _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 300),
-    );
-    _animationController.forward();
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
-  }
 
   void _topUp(double amount) {
     setState(() {
@@ -119,15 +102,6 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                "Halo! 👋",
-                                style: TextStyle(
-                                  color: Colors.white.withOpacity(0.9),
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
                               const Text(
                                 "BAYAR-in",
                                 style: TextStyle(
@@ -153,9 +127,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                           ),
                         ],
                       ),
-                      
+
                       const SizedBox(height: 28),
-                      
+
                       // Balance Card dengan Glassmorphism
                       Container(
                         width: double.infinity,
@@ -196,8 +170,8 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                                     });
                                   },
                                   child: Icon(
-                                    _isBalanceVisible 
-                                        ? Icons.visibility_outlined 
+                                    _isBalanceVisible
+                                        ? Icons.visibility_outlined
                                         : Icons.visibility_off_outlined,
                                     color: Colors.white.withOpacity(0.9),
                                     size: 20,
@@ -207,7 +181,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              _isBalanceVisible 
+                              _isBalanceVisible
                                   ? formatCurrency.format(saldo)
                                   : "Rp ••••••••",
                               style: const TextStyle(
@@ -342,7 +316,8 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => HistoryScreen(history: history),
+                                builder: (context) =>
+                                    HistoryScreen(history: history),
                               ),
                             );
                           },
@@ -357,7 +332,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                       ],
                     ),
                     const SizedBox(height: 12),
-                    ...history.reversed.take(3).map((trx) => _transactionItem(trx)),
+                    ...history.reversed
+                        .take(3)
+                        .map((trx) => _transactionItem(trx)),
                   ],
                 ),
               ),
@@ -459,7 +436,8 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) => TransferScreen(saldo: saldo, onTransfer: _transfer),
+              builder: (_) =>
+                  TransferScreen(saldo: saldo, onTransfer: _transfer),
             ),
           );
         }
@@ -506,7 +484,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   Widget _transactionItem(Transaction trx) {
     IconData icon;
     Color iconColor;
-    
+
     switch (trx.type) {
       case "Top Up":
         icon = Icons.add_circle;
@@ -565,10 +543,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                 const SizedBox(height: 4),
                 Text(
                   "${trx.date.day}/${trx.date.month}/${trx.date.year} • ${trx.date.hour}:${trx.date.minute.toString().padLeft(2, '0')}",
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey[600],
-                  ),
+                  style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                 ),
               ],
             ),
@@ -578,7 +553,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 15,
-              color: trx.type == "Top Up" ? const Color(0xFF10B981) : const Color(0xFF1F2937),
+              color: trx.type == "Top Up"
+                  ? const Color(0xFF10B981)
+                  : const Color(0xFF1F2937),
             ),
           ),
         ],
