@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 import 'TopUp.dart';
 import 'transfer_file.dart';
 import 'bayar_screen.dart';
@@ -11,6 +13,22 @@ class Transaction {
   final DateTime date;
 
   Transaction({required this.type, required this.amount, required this.date});
+
+  Map<String, dynamic> toMap() {
+    return {
+      'type': type,
+      'amount': amount,
+      'date': date.toIso8601String(),
+    };
+  }
+
+  factory Transaction.fromMap(Map<String, dynamic> map) {
+    return Transaction(
+      type: map['type'],
+      amount: map['amount'],
+      date: DateTime.parse(map['date']),
+    );
+  }
 }
 
 class HomeScreen extends StatefulWidget {
@@ -23,13 +41,41 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   double saldo = 0;
   bool _isBalanceVisible = true;
+  List<Transaction> history = [];
 
   final formatCurrency = NumberFormat.currency(
     locale: 'id_ID',
     symbol: 'Rp ',
     decimalDigits: 0,
   );
-  List<Transaction> history = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
+  }
+
+  Future<void> _saveData() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble('saldo', saldo);
+
+    List<String> encodedHistory =
+        history.map((trx) => jsonEncode(trx.toMap())).toList();
+    await prefs.setStringList('history', encodedHistory);
+  }
+
+  Future<void> _loadData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final savedSaldo = prefs.getDouble('saldo') ?? 0.0;
+    final savedHistory = prefs.getStringList('history') ?? [];
+
+    setState(() {
+      saldo = savedSaldo;
+      history = savedHistory
+          .map((e) => Transaction.fromMap(jsonDecode(e)))
+          .toList();
+    });
+  }
 
   void _topUp(double amount) {
     setState(() {
@@ -38,15 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
         Transaction(type: "Top Up", amount: amount, date: DateTime.now()),
       );
     });
-  }
-
-  void _updateSaldo(double newSaldo) {
-    setState(() {
-      saldo = newSaldo;
-      history.add(
-        Transaction(type: "Transfer", amount: newSaldo, date: DateTime.now()),
-      );
-    });
+    _saveData();
   }
 
   void _transfer(double amount) {
@@ -56,6 +94,17 @@ class _HomeScreenState extends State<HomeScreen> {
         Transaction(type: "Transfer", amount: amount, date: DateTime.now()),
       );
     });
+    _saveData();
+  }
+
+  void _bayar(double newSaldo, double amount) {
+    setState(() {
+      saldo = newSaldo;
+      history.add(
+        Transaction(type: "Bayar", amount: amount, date: DateTime.now()),
+      );
+    });
+    _saveData();
   }
 
   @override
@@ -65,16 +114,15 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Header dengan Gradient
             Container(
               decoration: BoxDecoration(
-                gradient: LinearGradient(
+                gradient: const LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    const Color(0xFF0A7075),
-                    const Color(0xFF108489),
-                    const Color(0xFF1A9EA3),
+                    Color(0xFF0A7075),
+                    Color(0xFF108489),
+                    Color(0xFF1A9EA3),
                   ],
                 ),
                 borderRadius: const BorderRadius.only(
@@ -83,7 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF108489).withOpacity(0.3),
+                    color: Color(0xFF108489).withOpacity(0.3),
                     blurRadius: 20,
                     offset: const Offset(0, 10),
                   ),
@@ -99,19 +147,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                "BAYAR-in",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                            ],
+                          const Text(
+                            "BAYAR-in",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 0.5,
+                            ),
                           ),
                           Container(
                             padding: const EdgeInsets.all(12),
@@ -130,7 +173,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                       const SizedBox(height: 28),
 
-                      // Balance Card dengan Glassmorphism
+                      // Kartu Saldo
                       Container(
                         width: double.infinity,
                         padding: const EdgeInsets.all(24),
@@ -243,57 +286,39 @@ class _HomeScreenState extends State<HomeScreen> {
 
             const SizedBox(height: 24),
 
-            // Menu Grid Section
+            // MENU GRID
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: GridView.count(
+                crossAxisCount: 4,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                mainAxisSpacing: 16,
+                crossAxisSpacing: 16,
                 children: [
-                  const Text(
-                    "Layanan",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF1F2937),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  GridView.count(
-                    crossAxisCount: 4,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    mainAxisSpacing: 16,
-                    crossAxisSpacing: 16,
-                    children: [
-                      _menuItem(
-                        icon: Icons.add_card,
-                        title: "Top Up",
-                        color: const Color(0xFF10B981),
-                      ),
-                      _menuItem(
-                        icon: Icons.send,
-                        title: "Transfer",
-                        color: const Color(0xFF3B82F6),
-                      ),
-                      _menuItem(
-                        icon: Icons.qr_code_scanner,
-                        title: "Bayar",
-                        color: const Color(0xFFEC4899),
-                      ),
-                      _menuItem(
-                        icon: Icons.history,
-                        title: "History",
-                        color: const Color(0xFFF59E0B),
-                      ),
-                    ],
-                  ),
+                  _menuItem(
+                      icon: Icons.add_card,
+                      title: "Top Up",
+                      color: const Color(0xFF10B981)),
+                  _menuItem(
+                      icon: Icons.send,
+                      title: "Transfer",
+                      color: const Color(0xFF3B82F6)),
+                  _menuItem(
+                      icon: Icons.qr_code_scanner,
+                      title: "Bayar",
+                      color: const Color(0xFFEC4899)),
+                  _menuItem(
+                      icon: Icons.history,
+                      title: "History",
+                      color: const Color(0xFFF59E0B)),
                 ],
               ),
             ),
 
             const SizedBox(height: 24),
 
-            // Recent Transactions
+            // TRANSAKSI TERAKHIR
             if (history.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -332,9 +357,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                     ),
                     const SizedBox(height: 12),
-                    ...history.reversed
-                        .take(3)
-                        .map((trx) => _transactionItem(trx)),
+                    ...history.reversed.take(3).map(_transactionItem),
                   ],
                 ),
               ),
@@ -397,39 +420,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => TopUp(
-                onTopUp: (amount) {
-                  _topUp(amount);
-                },
-              ),
-            ),
-          );
-        } else if (title == "Bayar") {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => BayarScreen(
-                saldo: saldo,
-                onBayar: (newSaldo, amount) {
-                  setState(() {
-                    saldo = newSaldo;
-                    history.add(
-                      Transaction(
-                        type: "Bayar",
-                        amount: amount,
-                        date: DateTime.now(),
-                      ),
-                    );
-                  });
-                },
-              ),
-            ),
-          );
-        } else if (title == "History") {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => HistoryScreen(history: history),
+              builder: (context) => TopUp(onTopUp: _topUp),
             ),
           );
         } else if (title == "Transfer") {
@@ -438,6 +429,23 @@ class _HomeScreenState extends State<HomeScreen> {
             MaterialPageRoute(
               builder: (_) =>
                   TransferScreen(saldo: saldo, onTransfer: _transfer),
+            ),
+          );
+        } else if (title == "Bayar") {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BayarScreen(
+                saldo: saldo,
+                onBayar: _bayar,
+              ),
+            ),
+          );
+        } else if (title == "History") {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => HistoryScreen(history: history),
             ),
           );
         }
