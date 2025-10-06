@@ -1,3 +1,5 @@
+import 'package:e_wallet_uts/screen/profile.dart';
+import 'package:e_wallet_uts/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,11 +17,7 @@ class Transaction {
   Transaction({required this.type, required this.amount, required this.date});
 
   Map<String, dynamic> toMap() {
-    return {
-      'type': type,
-      'amount': amount,
-      'date': date.toIso8601String(),
-    };
+    return {'type': type, 'amount': amount, 'date': date.toIso8601String()};
   }
 
   factory Transaction.fromMap(Map<String, dynamic> map) {
@@ -59,8 +57,9 @@ class _HomeScreenState extends State<HomeScreen> {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setDouble('saldo', saldo);
 
-    List<String> encodedHistory =
-        history.map((trx) => jsonEncode(trx.toMap())).toList();
+    List<String> encodedHistory = history
+        .map((trx) => jsonEncode(trx.toMap()))
+        .toList();
     await prefs.setStringList('history', encodedHistory);
   }
 
@@ -157,15 +156,17 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                           Container(
-                            padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
                               color: Colors.white.withOpacity(0.2),
                               borderRadius: BorderRadius.circular(16),
                             ),
-                            child: const Icon(
-                              Icons.notifications_outlined,
-                              color: Colors.white,
-                              size: 26,
+                            child: IconButton(
+                              onPressed: () => wPushTo(context, Profile()),
+                              icon: Icon(
+                                Icons.person,
+                                color: Colors.white,
+                                size: 30,
+                              ),
                             ),
                           ),
                         ],
@@ -297,21 +298,25 @@ class _HomeScreenState extends State<HomeScreen> {
                 crossAxisSpacing: 16,
                 children: [
                   _menuItem(
-                      icon: Icons.add_card,
-                      title: "Top Up",
-                      color: const Color(0xFF10B981)),
+                    icon: Icons.add_card,
+                    title: "Top Up",
+                    color: const Color(0xFF10B981),
+                  ),
                   _menuItem(
-                      icon: Icons.send,
-                      title: "Transfer",
-                      color: const Color(0xFF3B82F6)),
+                    icon: Icons.send,
+                    title: "Transfer",
+                    color: const Color(0xFF3B82F6),
+                  ),
                   _menuItem(
-                      icon: Icons.qr_code_scanner,
-                      title: "Bayar",
-                      color: const Color(0xFFEC4899)),
+                    icon: Icons.qr_code_scanner,
+                    title: "Bayar",
+                    color: const Color(0xFFEC4899),
+                  ),
                   _menuItem(
-                      icon: Icons.history,
-                      title: "History",
-                      color: const Color(0xFFF59E0B)),
+                    icon: Icons.history,
+                    title: "History",
+                    color: const Color(0xFFF59E0B),
+                  ),
                 ],
               ),
             ),
@@ -419,9 +424,7 @@ class _HomeScreenState extends State<HomeScreen> {
         if (title == "Top Up") {
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => TopUp(onTopUp: _topUp),
-            ),
+            MaterialPageRoute(builder: (context) => TopUp(onTopUp: _topUp)),
           );
         } else if (title == "Transfer") {
           Navigator.push(
@@ -435,10 +438,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) => BayarScreen(
-                saldo: saldo,
-                onBayar: _bayar,
-              ),
+              builder: (_) => BayarScreen(saldo: saldo, onBayar: _bayar),
             ),
           );
         } else if (title == "History") {
